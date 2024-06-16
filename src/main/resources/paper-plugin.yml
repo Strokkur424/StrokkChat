@@ -1,0 +1,4 @@
+name: StrokkChat
+version: '${version}'
+main: net.strokkur.strokkchat.StrokkChat
+api-version: '1.20'
