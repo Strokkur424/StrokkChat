@@ -1,4 +1,31 @@
 name: StrokkChat
-version: '${version}'
+version: '0.1-SNAPSHOT'
 main: net.strokkur.strokkchat.StrokkChat
 api-version: '1.20'
+load: STARTUP
+website: https://strokkur24.de/StrokkChat
+prefix: StrokkChat
+description: Feature rich chat formatting plugin for paper 1.20
+default-perm: op
+authors: [ Strokkur24 ]
+permissions:
+  strokkchat:
+    description: Root permission for StrokkChat
+    children:
+      reload:
+        description: Allow players to reload the config file
+      chat-format:
+        description: Root permission for permission-based chat formatting
+      mini-message:
+        description: Allows players to use minimessage components in their chat-messages
+      custom-placeholder:
+        description: Root permission for the custom placeholders you can define in placeholders.yml
+
+dependencies:
+  server:
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
+    LuckPerms:
+      load: BEFORE
+      required: false
