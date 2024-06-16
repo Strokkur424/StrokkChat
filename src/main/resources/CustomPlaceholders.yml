@@ -1,0 +1,32 @@
+# ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ #
+# │                                                                                                                 │ #
+# │                                          StrokkChat Configuration File                                          │ #
+# │                                              --> by Strokkur24 <--                                              │ #
+# │                                                                                                                 │ #
+# └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ #
+
+# Here you can define custom placeholders that you can add into your plugin. These can either be in the minimessage format
+# <tag> or in square brackets [tag]. <tag> should be used if you want to use it in Config.yml, [tag] should be used for
+# player input. [item] is for player input, so square brackets. They can not be used for config files.
+# <player_hover> would be for the config, thus <> mm format. Those can also be run by players with strokkchat.mini-message
+
+
+item:
+  # Has to be MINI_MESSAGE for <format> or SQUARE_BRACKETS for [format]
+  format: SQUARE_BRACKETS
+  # Has to be text or PRESET_ITEM_HELD
+  replace-with: PRESET_ITEM_HELD
+  # Optional.
+  aliases: [ i ]
+  # Optional. For brackets of type MINI_MESSAGE a player always needs the strokkchat.mini-message permission to use in chat.
+  # The permission will only apply for SQUARE_BRACKETS type. The final permission looks like this: strokkchat.custom-placeholder.<permission>.
+  # So in the default case: strokkchat.custom-placeholder.item
+  permission: item
+
+player_name_hover:
+  format: MINI_MESSAGE
+  replace-with: "<hover:show_text:'<gold><bold><player><underlined>'s Stats</underlined></bold></gold><br><green><bold>Money:</bold> $0</green><br><light_purple><bold>Bitches:</bold> 0'><player></hover>"
+
+player_name_hover_click:
+  format: MINI_MESSAGE
+  replace-with: "<click:suggest_command:'/msg <player>'><player_name_hover></click>"

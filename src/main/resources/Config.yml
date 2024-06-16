@@ -1,0 +1,31 @@
+# ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐ #
+# │                                                                                                                 │ #
+# │                                          StrokkChat Configuration File                                          │ #
+# │                                              --> by Strokkur24 <--                                              │ #
+# │                                                                                                                 │ #
+# └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ #
+
+# If you have PlaceholderAPI installed, you can use <papi:[placeholder]> to include placeholders in the messages.
+# ->> Example: <papi:player_name> equals to %player_name%. If you need to use a space inside of it, surround it with ''.
+# ->> Example: <papi:'this has a space'> equals to %this has a space%.
+#
+# If you have LuckPerms installed, you can just <lp:prefix>, <lp:group>, <lp:group_display>, and <lp:suffix> to paste in the prefix,
+# highest group of the player, display-name of the highest group, and the suffix of the player into the format.
+#
+# StrokkChat includes the following build-in placeholders:
+#   - <player>    <--  The player's name
+#   - <message>   <--  The message the player send
+#
+# Permission checks for the chat-formats are done using LuckPerms, if LuckPerms is installed, that is. If LuckPerms is not
+# installed, they will instead use the Bukkit way, which makes ops have every permission, meaning the __last defined format__
+# will be used for players with operator.
+
+# For more information: refer to https://docs.papermc.io/paper/dev/event-listeners#event-priority
+event-priority: HIGH
+
+chat-formats:
+  default: "<dark_gray>[<lp:prefix>]</dark_gray> <click:suggest_command:'/msg <player>'><player></click> <dark_gray>»</dark_gray> <message>"
+
+  # <player_name_hover_click> has been defined in CustomPlaceholder.yml, check it out!
+  red-gradient: "<dark_gray>[<lp:prefix>]</dark_gray> <player_name_hover_click> <dark_gray>»</dark_gray> <gradient:red:#AA0000><message></gradient>"
+
