@@ -3,7 +3,7 @@ version: '0.1-SNAPSHOT'
 main: net.strokkur.strokkchat.StrokkChat
 api-version: '1.20'
 load: STARTUP
-website: https://strokkur24.de/StrokkChat
+website: https://github.com/Strokkur424/StrokkChat
 prefix: StrokkChat
 description: Feature rich chat formatting plugin for paper 1.20
 default-perm: op
@@ -12,8 +12,15 @@ permissions:
   strokkchat:
     description: Root permission for StrokkChat
     children:
-      reload:
-        description: Allow players to reload the config file
+      command:
+        description: Allows users to run /strokkchat and /strokkchat help
+        children:
+          reload:
+            description: Allow players to reload the config file
+          debug:
+            description: Allows players to turn on debug mode
+          parse:
+            description: Allows players to parse a raw string message containing minimessage components into parsed text
       chat-format:
         description: Root permission for permission-based chat formatting
       mini-message:
