@@ -40,6 +40,7 @@ public class GeneralConfig extends AbstractConfigFile {
 
     public static void reloadCfg() {
         instance.reload();
+        StrokkChat.plugin.reloadChatEvent(priority());
     }
 
     private static void sendGenericMessage(@NotNull CommandSender sender, final String key) {
