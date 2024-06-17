@@ -19,14 +19,12 @@ public abstract class AbstractConfigFile {
             StrokkChat.plugin.saveResource(path, false);
         }
 
-        reload(true);
+        reload();
     }
 
-    public void reload(boolean postReload) {
+    public void reload() {
         cfg = YamlConfiguration.loadConfiguration(file);
-        if (postReload) {
-            postReload();
-        }
+        postReload();
     }
 
     public abstract void postReload();
