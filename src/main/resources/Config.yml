@@ -29,3 +29,34 @@ chat-formats:
   # <player_name_hover_click> has been defined in CustomPlaceholder.yml, check it out!
   red-gradient: "<dark_gray>[<lp:prefix>]</dark_gray> <player_name_hover_click> <dark_gray>»</dark_gray> <gradient:red:#AA0000><message></gradient>"
 
+# The format used for the build-in [item] placeholder
+item-preset-format: <dark_gray>[<white><item_in_hand></white>]</dark_gray>
+
+# Messages send in response to commands. Do not support and custom or internal placeholders unless specified otherwise.
+messages:
+  # Help is the only one which supports multiple lines
+  help:
+    - "<gradient:aqua:blue><strikethrough>============================================================"
+    - ""
+    - "  <aqua><bold>StrokkChat Help"
+    - "  <yellow>-</yellow> /strokkchat <dark_gray>»</dark_gray> Send this message <dark_gray<(<gray>Alias for /strokkchat help</gray>)"
+    - "  <yellow>-</yellow> /strokkchat help <dark_gray>»</dark_gray> Send this message"
+    - "  <yellow>-</yellow> /strokkchat reload [<Config|CustomPlaceholder>] <dark_gray>»</dark_gray> Reloads all or the specified plugin config(s)"
+    - "  <yellow>-</yellow> /strokkchat debug <on|off> <dark_gray>»</dark_gray> Toggle or turn on/off debug message printout."
+    - "  <yellow>-</yellow> /strokkchat parse <depth> <message> <dark_gray>»</dark_gray> Try parsing a string containing mini message components (includes [Bracket-Placeholders])"
+    - ""
+    - "<gradient:aqua:blue><strikethrough>============================================================"
+  reload:
+    # Use <config> for the config name (Config.yml or CustomPlaceholders.yml)
+    single: "<gold><bold>[!]</bold> Reloaded <yellow><config></yellow>! Check the console for syntax errors!"
+    all: "<gold><bold>[!]</bold> Reloaded <yellow>all</yellow> config files! Check the console for syntax errors!"
+  debug:
+    on: "<red><bold>[!]</bold> Turned <white>on</white> debug mode. Run <click:suggest_command:'/strokkchat debug off'><underlined><white>/strokkchat debug off</white></underlined></click> to turn it off."
+    off: "<green><bold>[!]</bold> Turned <white>off</white> debug mode."
+  # Use <parsed> for the returned component from your message. Use <raw> for the unparsed message (your input)
+  parse: "<dark_gray>»</dark_gray> <parsed>"
+
+# The amount of layers to check for placeholders. Increase this value if some placeholders are left unparsed. Might have effects
+# on server performance if this value is too high. Might produce errors at values higher than 20. These are not the plugin
+# developers fault, do not report them!
+placeholder-depth-limit: 5
