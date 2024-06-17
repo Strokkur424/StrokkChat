@@ -2,13 +2,18 @@ package net.strokkur.strokkchat;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.luckperms.api.LuckPerms;
 import net.strokkur.strokkchat.command.CmdStrokkChat;
+import net.strokkur.strokkchat.config.CPConfig;
+import net.strokkur.strokkchat.config.GeneralConfig;
+import net.strokkur.strokkchat.listener.ChatListener;
 import net.strokkur.strokkchat.util.TextUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
+import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,6 +28,8 @@ public final class StrokkChat extends JavaPlugin {
 
     public static LuckPerms luckPerms;
     public static boolean placeholderAPI;
+
+    private static final ChatListener chatListener = new ChatListener();
 
     @Override
     public void onLoad() {
@@ -48,8 +55,15 @@ public final class StrokkChat extends JavaPlugin {
         // Enable CommandAPI
         CommandAPI.onEnable();
 
+        // Load config files
+        new GeneralConfig("Config.yml");
+        new CPConfig("CustomPlaceholders.yml");
+
         // Register strokkchat command
         CmdStrokkChat.getCommand().register();
+
+        // Register chat event for the first time
+        reloadChatEvent(GeneralConfig.priority());
 
         // Send successfully enabled message :)
         log("Successfully enabled StrokkChat!");
@@ -62,10 +76,15 @@ public final class StrokkChat extends JavaPlugin {
 
     private final PluginManager pluginManager = Bukkit.getPluginManager();
 
-    private void event(Listener listener) {
-        pluginManager.registerEvents(listener, this);
+    public void reloadChatEvent(EventPriority priority) {
+        HandlerList.unregisterAll(chatListener);
+        chatEvent(priority);
     }
 
+    private void chatEvent(EventPriority priority) {
+        pluginManager.registerEvent(AsyncChatEvent.class, chatListener, priority, (ll, event) ->
+                ((ChatListener) ll).onMessage((AsyncChatEvent) event), this);
+    }
 
     public static void log(String message, TagResolver... tagResolvers) {
         Bukkit.getConsoleSender().sendMessage(TextUtil.parse("<dark_gray>[<gold>Strokk</gold><yellow>Chat</yellow>] </dark_gray><message>",
