@@ -1,16 +1,16 @@
 package net.strokkur.strokkchat.config;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.strokkur.strokkchat.StrokkChat;
 import net.strokkur.strokkchat.util.AbstractConfigFile;
+import net.strokkur.strokkchat.util.TextUtil;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class GeneralConfig extends AbstractConfigFile {
 
@@ -28,6 +28,22 @@ public class GeneralConfig extends AbstractConfigFile {
     public void postReload() {
         cfg = super.cfg;
         reloadChatFormats();
+    }
+
+    private static @NotNull String get(final String key) {
+        final String out = cfg.getString(key);
+        if (out == null) {
+            return "";
+        }
+        return out;
+    }
+
+    public static void reloadCfg() {
+        instance.reload();
+    }
+
+    private static void sendGenericMessage(@NotNull CommandSender sender, final String key) {
+        sender.sendMessage(TextUtil.parse(get(key)));
     }
 
     private static void reloadChatFormats() {
@@ -60,12 +76,35 @@ public class GeneralConfig extends AbstractConfigFile {
         }
     }
 
-    public static void sendChatMessage(final Player p, final String rawMessage) {
-
-
-
-
+    public static void messageHelp(CommandSender sender) {
+        for (String msg : cfg.getStringList("messages.help")) {
+            sender.sendMessage(TextUtil.parse(msg));
+        }
     }
 
+    public static void messageReloadSingle(@NotNull CommandSender sender, String config) {
+        sender.sendMessage(TextUtil.parse(get("messages.reload.single"),
+                Placeholder.unparsed("config", config)
+        ));
+    }
+
+    public static void messageReloadAll(@NotNull CommandSender sender) {
+        sendGenericMessage(sender, "messages.reload.all");
+    }
+
+    public static void messagesDebugOn(@NotNull CommandSender sender) {
+        sendGenericMessage(sender, "messages.debug.on");
+    }
+
+    public static void messagesDebugOff(@NotNull CommandSender sender) {
+        sendGenericMessage(sender, "messages.debug.off");
+    }
+
+    public static void messagesParse(@NotNull CommandSender sender, String raw, Component parsed) {
+        sender.sendMessage(TextUtil.parse(get("messages.parse"),
+                Placeholder.unparsed("raw", raw),
+                TextUtil.selfClosingTag("parsed", parsed)
+        ));
+    }
 
 }

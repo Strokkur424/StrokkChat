@@ -7,19 +7,19 @@ import net.strokkur.strokkchat.StrokkChat;
 import net.strokkur.strokkchat.util.AbstractConfigFile;
 import net.strokkur.strokkchat.util.TextUtil;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CPConfig extends AbstractConfigFile {
 
     private static CPConfig instance;
     private static YamlConfiguration cfg;
 
-    private static final HashMap<String, TagResolver> customPlaceholders = new HashMap<>();
+    private static final HashMap<String, String> customPlaceholders = new HashMap<>();
     private static final HashMap<String, String> customPlayerPlaceholders = new HashMap<>();
 
     public CPConfig(String path) {
@@ -33,8 +33,13 @@ public class CPConfig extends AbstractConfigFile {
         reloadCustomPlaceholders();
     }
 
+    public static void reloadCfg() {
+        instance.reload();
+    }
+
     public static void reloadCustomPlaceholders() {
         customPlaceholders.clear();
+        customPlayerPlaceholders.clear();
 
         for (final String subKey : cfg.getKeys(false)) {
 
@@ -42,52 +47,41 @@ public class CPConfig extends AbstractConfigFile {
 
             if (format == null) {
                 StrokkChat.logWarning(subKey +
-                                      ".format @ CustomPlaceholder.yml is not set. Please set it to <white>PRESET_ITEM_HELD</white> or <white>MINI_MESSAGE</white>!");
+                                      ".format @ CustomPlaceholder.yml is not set. Please set it to <white>SQUARE_BRACKETS</white> or <white>MINI_MESSAGE</white>!");
                 continue;
             }
 
+            // Get the required information needed to parse the placeholders in the future
+            List<String> names = new ArrayList<>(List.of(subKey));
+            names.addAll(cfg.getStringList(subKey + ".aliases"));
+
+            String content = cfg.getString(subKey + ".replace-with");
             if (format.equalsIgnoreCase("SQUARE_BRACKETS")) {
-                addPlayerPlaceholder(subKey);
+                for (String name : names) {
+                    customPlayerPlaceholders.put(name, content);
+                }
             }
             else if (format.equalsIgnoreCase("MINI_MESSAGE")) {
-                addMmPlaceholder(subKey);
+                for (String name : names) {
+                    customPlaceholders.put(name, content);
+                }
             }
+
             else {
                 StrokkChat.logWarning(subKey +
                                       ".format @ CustomPlaceholder.yml is not set to a valid value <dark_gray>(<white><value></white>)</dark_gray>. Please set it to <white>PRESET_ITEM_HELD</white> or <white>MINI_MESSAGE</white>!",
                         Placeholder.unparsed("value", format));
             }
         }
-
     }
 
-    private static void addMmPlaceholder(String name) {
+    public static @NotNull List<TagResolver> tagResolversMMPlaceholders() {
+        final List<TagResolver> out = new ArrayList<>();
 
+        for (Map.Entry<String, String> v : customPlaceholders.entrySet()) {
+            out.add(TextUtil.selfClosingTag(v.getKey(), Component.text(v.getValue())));
+        }
 
-
+        return out;
     }
-
-    private static void addPlayerPlaceholder(String name) {
-
-    }
-
-
-    public static @NotNull Component replaceChatMessageFormatPlaceholders(String raw, @NotNull Player p, Component parsedContent) {
-        final List<TagResolver> resolvers = new ArrayList<>() {
-            {
-                add(Placeholder.unparsed("player", p.getName()));
-                add(TextUtil.selfClosingTag("message", parsedContent));
-                if (StrokkChat.luckPerms != null) {
-                    add(TextUtil.luckpermsTag(p));
-                }
-                if (StrokkChat.placeholderAPI) {
-                    add(TextUtil.papiTag(p));
-                }
-            }
-        };
-
-        return TextUtil.parse(raw, resolvers.toArray(new TagResolver[0]));
-    }
-
-
 }
