@@ -25,7 +25,7 @@ item:
 
 player_name_hover:
   format: MINI_MESSAGE
-  replace-with: "<hover:show_text:'<gold><bold><player><underlined>'s Stats</underlined></bold></gold><br><green><bold>Money:</bold> $0</green><br><light_purple><bold>Bitches:</bold> 0'><player></hover>"
+  replace-with: "<hover:show_text:'<gold><bold><player><underlined>\\'s Stats</underlined></bold></gold><br><green><bold>Money:</bold> $0</green><br><light_purple><bold>Bitches:</bold> 0'><player></hover>"
 
 player_name_hover_click:
   format: MINI_MESSAGE

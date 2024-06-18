@@ -87,6 +87,9 @@ public class TextUtil {
                 }
                 else {
                     rawValue = user.getCachedData().getMetaData().getPrefix();
+                    if (rawValue == null) {
+                        rawValue = "";
+                    }
                 }
             }
             else if (argument.equalsIgnoreCase("group")) {
@@ -130,9 +133,9 @@ public class TextUtil {
             }
 
             // Turn the raw text into a component
-            final Component componentValue = LegacyComponentSerializer.builder().hexColors().build().deserialize(Objects.requireNonNull(rawValue));
+            final Component componentValue = LegacyComponentSerializer.builder().hexColors().build().deserialize(Objects.requireNonNull(rawValue).replace('&', '§'));
 
-            // Return the tag as a self closing one
+            // Return the tag as a self-closing one
             return Tag.selfClosingInserting(componentValue);
         });
     }

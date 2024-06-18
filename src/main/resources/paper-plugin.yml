@@ -6,27 +6,34 @@ load: STARTUP
 website: https://github.com/Strokkur424/StrokkChat
 prefix: StrokkChat
 description: Feature rich chat formatting plugin for paper 1.20
-default-perm: op
+default-perm: false
 authors: [ Strokkur24 ]
 permissions:
   strokkchat:
     description: Root permission for StrokkChat
+    default: op
     children:
       command:
         description: Allows users to run /strokkchat and /strokkchat help
         children:
           reload:
             description: Allow players to reload the config file
+            default: op
           debug:
             description: Allows players to turn on debug mode
+            default: op
           parse:
             description: Allows players to parse a raw string message containing minimessage components into parsed text
-      chat-format:
+            default: op
+      chatformat:
         description: Root permission for permission-based chat formatting
-      mini-message:
+        default: false
+      minimessage:
         description: Allows players to use minimessage components in their chat-messages
+        default: op
       custom-placeholder:
         description: Root permission for the custom placeholders you can define in placeholders.yml
+        default: false
 
 dependencies:
   server:

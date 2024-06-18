@@ -7,10 +7,13 @@ import net.strokkur.strokkchat.util.AbstractConfigFile;
 import net.strokkur.strokkchat.util.TextUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class GeneralConfig extends AbstractConfigFile {
 
@@ -35,6 +38,21 @@ public class GeneralConfig extends AbstractConfigFile {
         if (out == null) {
             return "";
         }
+        return out;
+    }
+
+    private static @NotNull List<String> getSubKeys(final @NotNull String key) {
+        final List<String> out = new ArrayList<>();
+
+        int depth = key.split("\\.").length;
+        for (final String subKey : cfg.getKeys(true)) {
+
+            // Check whether it starts with the key and has a deeper depth by one (direct child entry)
+            if (subKey.startsWith(key) && subKey.split("\\.").length == depth + 1) {
+                out.add(subKey);
+            }
+        }
+
         return out;
     }
 
@@ -75,6 +93,26 @@ public class GeneralConfig extends AbstractConfigFile {
             StrokkChat.logWarning("event-priority @ Config.yml returns an invalid value: <input>. Defaulting to HIGH", Placeholder.unparsed("input", raw));
             return EventPriority.HIGH;
         }
+    }
+
+    public static int defaultDepth() {
+        return cfg.getInt("placeholder-depth-limit");
+    }
+
+    public static String getCorrectFormat(final @NotNull Player player) {
+        if (!player.hasPermission("strokkchat.chatformat")) {
+            return cfg.getString("chat-format.default");
+        }
+
+        for (final String subKey : getSubKeys("chat-format")) {
+
+            final String[] split = subKey.split("\\.");
+            if (player.hasPermission("strokkchat.chatformat." + split[split.length - 1])) {
+                return cfg.getString(subKey);
+            }
+        }
+
+        return cfg.getString("chat-format.default");
     }
 
     public static void messageHelp(CommandSender sender) {

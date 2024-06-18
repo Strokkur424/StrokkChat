@@ -6,12 +6,13 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.luckperms.api.LuckPerms;
-import net.strokkur.strokkchat.command.CmdStrokkChat;
 import net.strokkur.strokkchat.config.CPConfig;
 import net.strokkur.strokkchat.config.GeneralConfig;
 import net.strokkur.strokkchat.listener.ChatListener;
 import net.strokkur.strokkchat.util.TextUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
@@ -20,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class StrokkChat extends JavaPlugin {
@@ -38,6 +40,8 @@ public final class StrokkChat extends JavaPlugin {
         cfg.shouldHookPaperReload(true);
         cfg.skipReloadDatapacks(true);
         CommandAPI.onLoad(cfg);
+
+        plugin = this;
     }
 
     @Override
@@ -60,7 +64,7 @@ public final class StrokkChat extends JavaPlugin {
         new CPConfig("CustomPlaceholders.yml");
 
         // Register strokkchat command
-        CmdStrokkChat.getCommand().register();
+        StrokkChatCommand.getCommand().register();
 
         // Register chat event for the first time
         reloadChatEvent(GeneralConfig.priority());
@@ -86,28 +90,49 @@ public final class StrokkChat extends JavaPlugin {
                 ((ChatListener) ll).onMessage((AsyncChatEvent) event), this);
     }
 
+
+    private static final TagResolver debugTag = TextUtil.selfClosingTag("debug", TextUtil.parse("<dark_gray>[<light_purple>DEBUG</light_purple>]</dark_gray>"));
+    private static final TagResolver prefixTag = TextUtil.selfClosingTag("console_prefix",
+            TextUtil.parse("<dark_gray>[<gold>Strokk</gold><yellow>Chat</yellow>]"));
+
     public static void log(String message, TagResolver... tagResolvers) {
-        Bukkit.getConsoleSender().sendMessage(TextUtil.parse("<dark_gray>[<gold>Strokk</gold><yellow>Chat</yellow>] </dark_gray><message>",
-                combineTagResolvers(Placeholder.parsed("message", message), tagResolvers)
+        Bukkit.getConsoleSender().sendMessage(TextUtil.parse("<console_prefix> <message>",
+                combineTagResolvers(new TagResolver[]{Placeholder.parsed("message", message), prefixTag}, tagResolvers)
         ));
     }
 
     public static void logWarning(String message, TagResolver... tagResolvers) {
         Bukkit.getConsoleSender()
-                .sendMessage(TextUtil.parse("<dark_gray>[<gold>Strokk</gold><yellow>Chat</yellow>] [<yellow>WARNING</yellow>] </dark_gray><message>",
-                        combineTagResolvers(Placeholder.parsed("message", message), tagResolvers)
+                .sendMessage(TextUtil.parse("<console_prefix> </dark_gray>[<yellow>WARNING</yellow>]</dark_gray> <message>",
+                        combineTagResolvers(new TagResolver[]{Placeholder.parsed("message", message), prefixTag}, tagResolvers)
                 ));
     }
 
     public static void logError(String message, TagResolver... tagResolvers) {
-        Bukkit.getConsoleSender().sendMessage(TextUtil.parse("<dark_gray>[<gold>Strokk</gold><yellow>Chat</yellow>] [<red>ERROR</red>] </dark_gray><message>",
-                combineTagResolvers(Placeholder.parsed("message", message), tagResolvers)
+        Bukkit.getConsoleSender().sendMessage(TextUtil.parse("<console_prefix> <dark_gray>[<red>ERROR</red>]</dark_gray> <message>",
+                combineTagResolvers(new TagResolver[]{Placeholder.parsed("message", message), prefixTag}, tagResolvers)
         ));
     }
 
-    private static TagResolver @NotNull [] combineTagResolvers(TagResolver single, TagResolver... multiple) {
+
+    public static void logDebug(String message, TagResolver... tagResolvers) {
+        for (final CommandSender sender : StrokkChatCommand.debugModeEnabled) {
+            if (sender instanceof ConsoleCommandSender) {
+                sender.sendMessage(TextUtil.parse("<console_prefix> <debug> <message>",
+                        combineTagResolvers(new TagResolver[]{Placeholder.parsed("message", message), prefixTag, debugTag}, tagResolvers)
+                ));
+            }
+            else {
+                sender.sendMessage(TextUtil.parse("<debug> <message>",
+                        combineTagResolvers(new TagResolver[]{Placeholder.parsed("message", message), debugTag}, tagResolvers)
+                ));
+            }
+        }
+    }
+
+    private static TagResolver @NotNull [] combineTagResolvers(TagResolver[] some, TagResolver... multiple) {
         List<TagResolver> resolvers = new ArrayList<>(List.of(multiple));
-        resolvers.add(single);
+        resolvers.addAll(Arrays.stream(some).toList());
         return resolvers.toArray(new TagResolver[0]);
     }
 

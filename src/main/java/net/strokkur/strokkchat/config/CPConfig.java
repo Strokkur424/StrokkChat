@@ -7,12 +7,14 @@ import net.strokkur.strokkchat.StrokkChat;
 import net.strokkur.strokkchat.util.AbstractConfigFile;
 import net.strokkur.strokkchat.util.TextUtil;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class CPConfig extends AbstractConfigFile {
 
@@ -75,13 +77,76 @@ public class CPConfig extends AbstractConfigFile {
         }
     }
 
-    public static @NotNull List<TagResolver> tagResolversMMPlaceholders() {
-        final List<TagResolver> out = new ArrayList<>();
-
-        for (Map.Entry<String, String> v : customPlaceholders.entrySet()) {
-            out.add(TextUtil.selfClosingTag(v.getKey(), Component.text(v.getValue())));
+    public static @NotNull Component parseConfigString(final String raw, final Player player, int depth) {
+        String parsedText = raw;
+        for (int i = depth; i > 0; i--) {
+            parsedText = CPConfig.replaceMMPlaceholders(parsedText);
+            StrokkChat.logDebug("<gray>Current parsed text: </gray><raw_message>", Placeholder.unparsed("raw_message", parsedText));
         }
 
-        return out;
+        final List<TagResolver> tagResolvers = new ArrayList<>();
+        if (StrokkChat.luckPerms != null) {
+            tagResolvers.add(TextUtil.luckpermsTag(player));
+        }
+
+        if (StrokkChat.placeholderAPI) {
+            tagResolvers.add(TextUtil.papiTag(player));
+        }
+
+        tagResolvers.add(Placeholder.unparsed("player", player.getName()));
+
+        return TextUtil.parse(parsedText,
+                tagResolvers.toArray(new TagResolver[0])
+        );
     }
+
+    public static @NotNull Component parsePlayerInputString(final String raw, final @NotNull Player player) {
+        if (!player.hasPermission("strokkchat.minimessage")) {
+            return Component.text(raw);
+        }
+
+        String parsed = raw;
+        for (int i = GeneralConfig.defaultDepth(); i > 0; i--) {
+            parsed = replaceMMPlaceholders(raw, player);
+        }
+
+        return TextUtil.parse(parsed);
+    }
+
+    public static @NotNull String replaceMMPlaceholders(String str) {
+        final List<String> tagsToCheck = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : customPlaceholders.entrySet()) {
+            if (str.contains("<" + entry.getKey() + ">")) {
+                tagsToCheck.add(entry.getKey());
+            }
+        }
+        for (String tag : tagsToCheck) {
+            str = str.replaceAll(Pattern.quote("<" + tag + ">"), customPlaceholders.get(tag));
+        }
+
+        return str;
+    }
+
+    public static @NotNull String replaceMMPlaceholders(String str, @NotNull Player player) {
+        if (!player.hasPermission("strokkchat.minimessage")) {
+            return str;
+        }
+
+        final List<String> tagsToCheck = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : customPlaceholders.entrySet()) {
+            if (str.contains("<" + entry.getKey() + ">") && player.hasPermission("strokkchat.custom-placeholder." + entry.getKey())) {
+                tagsToCheck.add(entry.getKey());
+            }
+        }
+
+        for (String tag : tagsToCheck) {
+            str = str.replaceAll(Pattern.quote("<" + tag + ">"), customPlaceholders.get(tag));
+        }
+
+        return str;
+    }
+
+
 }

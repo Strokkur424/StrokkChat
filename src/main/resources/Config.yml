@@ -16,14 +16,13 @@
 #   - <player>    <--  The player's name
 #   - <message>   <--  The message the player send
 #
-# Permission checks for the chat-formats are done using LuckPerms, if LuckPerms is installed, that is. If LuckPerms is not
-# installed, they will instead use the Bukkit way, which makes ops have every permission, meaning the __last defined format__
-# will be used for players with operator.
+# The chat format will be selected by permission. The permissions look like this: strokkchat.chatformat.<name>.
+# So if you have a format called red-gradient, the permission will be strokkchat.chatformat.red-gradient
 
 # For more information: refer to https://docs.papermc.io/paper/dev/event-listeners#event-priority
 event-priority: HIGH
 
-chat-formats:
+chat-format:
   default: "<dark_gray>[<lp:prefix>]</dark_gray> <click:suggest_command:'/msg <player>'><player></click> <dark_gray>»</dark_gray> <message>"
 
   # <player_name_hover_click> has been defined in CustomPlaceholder.yml, check it out!
@@ -51,8 +50,8 @@ messages:
     single: "<gold><bold>[!]</bold> Reloaded <yellow><config></yellow>! Check the console for syntax errors!"
     all: "<gold><bold>[!]</bold> Reloaded <yellow>all</yellow> config files! Check the console for syntax errors!"
   debug:
-    on: "<red><bold>[!]</bold> Turned <white>on</white> debug mode. Run <click:suggest_command:'/strokkchat debug off'><underlined><white>/strokkchat debug off</white></underlined></click> to turn it off."
-    off: "<green><bold>[!]</bold> Turned <white>off</white> debug mode."
+    'on': "<red><bold>[!]</bold> Turned <white>on</white> debug mode. Run <click:suggest_command:'/strokkchat debug off'><underlined><white>/strokkchat debug off</white></underlined></click> to turn it off."
+    'off': "<green><bold>[!]</bold> Turned <white>off</white> debug mode."
   # Use <parsed> for the returned component from your message. Use <raw> for the unparsed message (your input)
   parse: "<dark_gray>»</dark_gray> <parsed>"
 

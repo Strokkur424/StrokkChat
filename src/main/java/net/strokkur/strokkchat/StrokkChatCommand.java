@@ -1,21 +1,19 @@
-package net.strokkur.strokkchat.command;
+package net.strokkur.strokkchat;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.GreedyStringArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import dev.jorel.commandapi.executors.CommandArguments;
-import net.kyori.adventure.text.Component;
 import net.strokkur.strokkchat.config.CPConfig;
 import net.strokkur.strokkchat.config.GeneralConfig;
-import net.strokkur.strokkchat.util.TextUtil;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class CmdStrokkChat {
+public class StrokkChatCommand {
 
     public static final List<CommandSender> debugModeEnabled = new ArrayList<>();
 
@@ -23,9 +21,9 @@ public class CmdStrokkChat {
 
         return new CommandAPICommand("strokkchat")
                 .withPermission("strokkchat.command")
-                .executes(CmdStrokkChat::sendHelp)
+                .executes(StrokkChatCommand::sendHelp)
                 .withSubcommands(
-                        new CommandAPICommand("help").executes(CmdStrokkChat::sendHelp),
+                        new CommandAPICommand("help").executes(StrokkChatCommand::sendHelp),
                         reload(),
                         debug(),
                         parse()
@@ -84,13 +82,11 @@ public class CmdStrokkChat {
         return new CommandAPICommand("parse")
                 .withPermission("strokkchat.command.parse")
                 .withArguments(new IntegerArgument("depth", 0), new GreedyStringArgument("message"))
-                .executes((sender, args) -> {
-                    // TODO Implement custom placeholder parsing in here
-
+                .executesPlayer((player, args) -> {
                     final String raw = (String) Objects.requireNonNull(args.get("message"));
-                    final Component parsed = TextUtil.parse(raw);
+                    final int depth = (int) Objects.requireNonNull(args.get("depth"));
 
-                    GeneralConfig.messagesParse(sender, raw, parsed);
+                    GeneralConfig.messagesParse(player, raw, CPConfig.parseConfigString(raw, player, depth));
                 });
     }
 
