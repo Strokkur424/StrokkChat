@@ -1,5 +1,5 @@
 # StrokkChat
-Server version: Paper 1.20.4
+Server version: Paper 1.20.4 <br>
 -- WILL NOT WORK ON SPIGOT --
 
 ## Feature Overview
@@ -17,11 +17,16 @@ Server version: Paper 1.20.4
 - Add support for more APIs
 
 ## Contributing
-Contributions in general are appreciated! Since I have not used MiniMessage for long, my ways are most definetely flawed. So any performance or code improving pull-requests are greatly appreciated.
-If you want to add a feature, please consult with me first by opening up an Issue.
+- Contributions in general are appreciated! Since I have not used MiniMessage for long, my ways are most definitely 
+flawed. So any performance or code improving pull-requests are greatly appreciated.
+- If you want to add a feature, please consult with me first by opening up an Issue.
+
+## API Usage
+- Currently, there is no API. But once I implement it, you can find maven / gradle repository information and API
+usage documentation here!
 
 ## Special Thanks
-...to nobody, yet! If you provide a significant contribution you might get listed here~
+- ...to nobody, yet! If you provide a significant contribution you might get listed here~
 
 ## TODO List
 - [x] Add the ability to load and parse custom defined MiniMessage placeholders
@@ -29,7 +34,7 @@ If you want to add a feature, please consult with me first by opening up an Issu
 - [ ] Make MiniMessage tags be parsed inside of other MiniMessage tags (tag in tag)
 - [ ] Different chat formats depending on a users permission
 - [ ] Add a developer API
-- [x] Add build-in <player>, <lp>, and <papi> tags
+- [x] Add build-in `<player>`, `<lp>`, and `<papi>` tags
 - [ ] Make the build-in chat placeholder [item] work correctly
 - [ ] Define and use GUI-placeholders
 - [ ] Add a way to distinguish self-closing and inserting MiniMessage tags (`<my_name>` and `<my_style>text</my_style>`)
