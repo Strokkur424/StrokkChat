@@ -22,3 +22,15 @@ If you want to add a feature, please consult with me first by opening up an Issu
 
 ## Special Thanks
 ...to nobody, yet! If you provide a significant contribution you might get listed here~
+
+## TODO List
+- [x] Add the ability to load and parse custom defined MiniMessage placeholders
+- [ ] Add the ability to load and parse custom defined chat placeholders
+- [ ] Make MiniMessage tags be parsed inside of other MiniMessage tags (tag in tag)
+- [ ] Different chat formats depending on a users permission
+- [ ] Add a developer API
+- [x] Add build-in <player>, <lp>, and <papi> tags
+- [ ] Make the build-in chat placeholder [item] work correctly
+- [ ] Define and use GUI-placeholders
+- [ ] Add a way to distinguish self-closing and inserting MiniMessage tags (`<my_name>` and `<my_style>text</my_style>`)
+- [ ] Add Vault API, Essentials API, and more, direct API support in tags (ex.: `<essentials:nick>` or `<vault:balance>`)
