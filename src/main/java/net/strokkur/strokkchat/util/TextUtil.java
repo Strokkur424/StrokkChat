@@ -37,6 +37,14 @@ public class TextUtil {
                 .deserialize(message, TagResolver.resolver(resolverList));
     }
 
+    public static @NotNull Component parse(final @NotNull String message, final @NotNull List<TagResolver> resolvers) {
+        return parse(message, TagResolver.resolver(resolvers));
+    }
+
+    public static @NotNull Component parse(final @NotNull String message, final @Nullable Player player, final @NotNull List<TagResolver> resolvers) {
+        return parse(message, player, TagResolver.resolver(resolvers));
+    }
+
     /**
      * Creates a tag resolver capable of resolving PlaceholderAPI tags for a given player.
      *

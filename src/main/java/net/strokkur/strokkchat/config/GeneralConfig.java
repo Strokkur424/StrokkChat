@@ -41,14 +41,14 @@ public class GeneralConfig extends AbstractConfigFile {
         return out;
     }
 
-    private static @NotNull List<String> getSubKeys(final @NotNull String key) {
+    private static @NotNull List<String> getChatformats() {
         final List<String> out = new ArrayList<>();
 
-        int depth = key.split("\\.").length;
+        int depth = "chat-format".split("\\.").length;
         for (final String subKey : cfg.getKeys(true)) {
 
-            // Check whether it starts with the key and has a deeper depth by one (direct child entry)
-            if (subKey.startsWith(key) && subKey.split("\\.").length == depth + 1) {
+            // Check whether it starts with chat-format and has a deeper depth by one (direct child entry)
+            if (subKey.startsWith("chat-format") && subKey.split("\\.").length == depth + 1) {
                 out.add(subKey);
             }
         }
@@ -104,7 +104,7 @@ public class GeneralConfig extends AbstractConfigFile {
             return cfg.getString("chat-format.default");
         }
 
-        for (final String subKey : getSubKeys("chat-format")) {
+        for (final String subKey : getChatformats()) {
 
             final String[] split = subKey.split("\\.");
             if (player.hasPermission("strokkchat.chatformat." + split[split.length - 1])) {

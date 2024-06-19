@@ -8,6 +8,7 @@ import dev.jorel.commandapi.executors.CommandArguments;
 import net.strokkur.strokkchat.config.CPConfig;
 import net.strokkur.strokkchat.config.GeneralConfig;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,12 +84,11 @@ public class StrokkChatCommand {
                 .withPermission("strokkchat.command.parse")
                 .withArguments(new IntegerArgument("depth", 0), new GreedyStringArgument("message"))
                 .executesPlayer((player, args) -> {
-                    final String raw = (String) Objects.requireNonNull(args.get("message"));
-                    final int depth = (int) Objects.requireNonNull(args.get("depth"));
+                    final String raw = Objects.requireNonNull(args.getByClass("message", String.class));
+                    final int depth = Objects.requireNonNull(args.getByClass("depth", int.class));
 
                     GeneralConfig.messagesParse(player, raw, CPConfig.parseConfigString(raw, player, depth));
                 });
     }
-
 
 }

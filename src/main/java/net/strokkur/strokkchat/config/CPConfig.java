@@ -81,7 +81,6 @@ public class CPConfig extends AbstractConfigFile {
         String parsedText = raw;
         for (int i = depth; i > 0; i--) {
             parsedText = CPConfig.replaceMMPlaceholders(parsedText);
-            StrokkChat.logDebug("<gray>Current parsed text: </gray><raw_message>", Placeholder.unparsed("raw_message", parsedText));
         }
 
         final List<TagResolver> tagResolvers = new ArrayList<>();
@@ -94,6 +93,7 @@ public class CPConfig extends AbstractConfigFile {
         }
 
         tagResolvers.add(Placeholder.unparsed("player", player.getName()));
+        StrokkChat.logDebug("<gray>Current parsed text: </gray><raw_message>", Placeholder.unparsed("raw_message", parsedText));
 
         return TextUtil.parse(parsedText,
                 tagResolvers.toArray(new TagResolver[0])
